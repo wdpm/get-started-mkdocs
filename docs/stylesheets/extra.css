@@ -1,0 +1,50 @@
+:root > * {
+  --md-primary-fg-color: #30a8dc;
+  --md-primary-fg-color--light: #ECB7B7;
+  --md-primary-fg-color--dark: #ef8d96;
+}
+
+[data-md-color-scheme="youtube"] {
+  --md-primary-fg-color: #EE0F0F;
+  --md-primary-fg-color--light: #ECB7B7;
+  --md-primary-fg-color--dark: #90030C;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-hue: 210;
+}
+
+/* refer docs: https://github.com/chawyehsu/lxgw-wenkai-webfont */
+@font-face {
+  font-family: "LXGW WenKai";
+  src: url("https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css");
+}
+
+@font-face {
+  font-family: "LXGW WenKai Lite";
+  src: url("https://cdn.jsdelivr.net/npm/lxgw-wenkai-lite-webfont@1.1.0/style.css");
+}
+
+/* Lite version does NOT work due to Failed to decode downloaded font and OTS parsing error: invalid sfntVersion */
+@font-face {
+  font-family: "LXGW WenKai Screen";
+  font-display: auto;
+  src: url("https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css");
+}
+
+
+:root {
+  --md-text-font: "LXGW WenKai Screen";
+  --md-code-font: "<font>"; /* custom code font */
+}
+
+/* tune back to top position*/
+[dir=ltr] .md-top {
+  top: unset!important;
+  right: -48px;
+  bottom: 100px;
+}
+
+.md-grid {
+  /*max-width: initial;*/
+}
