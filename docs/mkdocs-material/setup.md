@@ -458,7 +458,7 @@ theme:
 ```yml
 plugins:
   - social:
-      cards: !ENV [CARDS, false]
+      cards: !ENV [ CARDS, false ]
       cards_color:
         fill: "#0FF1CE"
         text: "#FFFFFF"
@@ -575,13 +575,141 @@ copyright: Copyright &copy; 2016 - 2020 Martin Donath
 如果想要自定义 footer，参阅 [扩展主题](https://squidfunk.github.io/mkdocs-material/customization/#extending-the-theme)
 
 ## git repo
-> https://squidfunk.github.io/mkdocs-material/setup/adding-a-git-repository/
+
+### repo
+
+```yml
+repo_url: https://github.com/squidfunk/mkdocs-material
+repo_name: squidfunk/mkdocs-material
+edit_uri: edit/main/docs/
+
+theme:
+  icon:
+    repo: fontawesome/brands/git-alt
+    edit: material/pencil 
+```
+
+### Revisioning
+
+```bash
+pip install mkdocs-git-revision-date-localized-plugin
+```
+
+edit `mkdocs.yml`
+
+```yml
+plugins:
+  - git-revision-date-localized:
+      enabled: !ENV [ CI, false ]
+      enable_creation_date: true
+      type: date
+      fallback_to_build_date: true
+```
 
 ## comment system
+
 终于可以摆脱基于 github issues 原理的评论系统了（goodbye gitalk），现在是薅 github discussion 的羊毛。
 
-> https://squidfunk.github.io/mkdocs-material/setup/adding-a-comment-system/
+### Giscus integration
 
-## format
+1)安装 [Giscus GitHub App](https://github.com/apps/giscus)；
 
-> https://squidfunk.github.io/mkdocs-material/reference/formatting/#configuration
+2)访问 [Giscus](https://giscus.app/) 并生成代码配置片段。格式如下：
+
+```js
+<script
+    src="https://giscus.app/client.js"
+    data-repo="<username>/<repository>"
+    data-repo-id="..."
+    data-category="..."
+    data-category-id="..."
+    data-mapping="pathname"
+    data-reactions-enabled="1"
+    data-emit-metadata="1"
+    data-theme="light"
+    data-lang="en"
+    crossorigin="anonymous"
+    async
+>
+</script>
+```
+
+具体的例子：
+
+```js
+<script src="https://giscus.app/client.js"
+        data-repo="wdpm/get-started-mkdocs"
+        data-repo-id="R_kgDOIJ-OIw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOIJ-OI84CR2cR"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+```
+
+可以在嵌入的页面中使用 .giscus 和 .giscus-frame 选择器来自定义容器布局。
+
+高级用法:
+
+- 你可以依照高级用法指南添加额外配置（例如允许特定来源）。
+- 要在 React、Vue 和 Svelte 中使用 giscus，请查看 [giscus 组件库](https://github.com/giscus/giscus-component) 。
+
+
+3) 新建一个 `comments.html` 来扩展主题，位于 `overrides/partials` 子目录下
+
+```html
+{% if page.meta.comments %}
+  <h2 id="__comments">{{lang.t("meta.comments") }}</h2>
+  <!-- Insert generated snippet here -->
+
+  <!-- Synchronize Giscus theme with palette -->
+  <script>
+    var giscus = document.querySelector("script[src*=giscus]")
+
+    /* Set palette on initial load */
+    var palette = __md_get("__palette")
+    if (palette && typeof palette.color === "object") {
+      var theme = palette.color.scheme === "slate" ? "dark" : "light"
+      giscus.setAttribute("data-theme", theme) 
+    }
+
+    /* Register event handlers after documented loaded */
+    document.addEventListener("DOMContentLoaded", function() {
+      var ref = document.querySelector("[data-md-component=palette]")
+      ref.addEventListener("change", function() {
+        var palette = __md_get("__palette")
+        if (palette && typeof palette.color === "object") {
+          var theme = palette.color.scheme === "slate" ? "dark" : "light"
+
+          /* Instruct Giscus to change theme */
+          var frame = document.querySelector(".giscus-frame")
+          frame.contentWindow.postMessage(
+            {giscus: { setConfig: { theme} } },
+            "https://giscus.app"
+          )
+        }
+      })
+    })
+  </script>
+{% endif %}
+```
+将第二步生成的代码配置放入第三步的`<!-- Insert generated snippet here -->`位置。
+
+4) 在特定页面启用评论功能。
+```markdown
+---
+comments: true
+---
+
+# Document title
+...
+```
+注意：此时上面这个页面并没有出现评论元素。

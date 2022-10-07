@@ -1,11 +1,16 @@
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
 
+repo_url: https://github.com/wdpm/get-started-mkdocs
+repo_name: wdpm/get-started-mkdocs
+# https://github.com/wdpm/get-started-mkdocs/edit/main/docs/index.md
+edit_uri: edit/main/docs/
+
 site_name: Markdown Docs
 site_url: http://example.com
 nav:
   - home:
-    - index.md
-    - tags: tags.md
+      - index.md
+      - tags: tags.md
   - setup:
       #      - setup/index.md
       - get-started: setup/get-started.md
@@ -19,7 +24,22 @@ extra_css:
   - stylesheets/extra.css
 
 markdown_extensions:
+# admonition
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+# buttons
   - attr_list
+# code block
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+#  content tabs
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.critic
   - pymdownx.caret
   - pymdownx.keys
@@ -71,7 +91,7 @@ copyright: >
 plugins:
   # https://www.mkdocs.org/user-guide/configuration/#environment-variables
   - social:
-      cards: !ENV [CARDS, false]
+      cards: !ENV [ CARDS, false ]
       cards_color:
         fill: "#0FF1CE"
         text: "#FFFFFF"
@@ -85,11 +105,16 @@ plugins:
   - tags:
       tags_file: tags.md
       # Warning: ('tags_slugify', 'Unrecognised configuration name: tags_slugify')
-#      tags_slugify: !!python/object/apply:pymdownx.slugs.slugify
-#        kwds:
-#          case: lower
+      #      tags_slugify: !!python/object/apply:pymdownx.slugs.slugify
+      #        kwds:
+      #          case: lower
       # Warning: ('tags_slugify_separator', 'Unrecognised configuration name: tags_slugify_separator')
-#      tags_slugify_separator: "-"
+  #      tags_slugify_separator: "-"
+  - git-revision-date-localized:
+      enabled: !ENV [ CI, false ]
+      enable_creation_date: true
+      type: date
+      fallback_to_build_date: true
 
 
 theme:
@@ -97,12 +122,29 @@ theme:
   logo: assets/logo.png
   favicon: assets/favicon.ico
   icon:
+    admonition:
+      #      github icons
+      note: octicons/tag-16
+      abstract: octicons/checklist-16
+      info: octicons/info-16
+      tip: octicons/squirrel-16
+      success: octicons/check-16
+      question: octicons/question-16
+      warning: octicons/alert-16
+      failure: octicons/x-circle-16
+      danger: octicons/zap-16
+      bug: octicons/bug-16
+      example: octicons/beaker-16
+      quote: octicons/quote-16
+    edit: material/file-edit-outline # material/file-edit
+    repo: fontawesome/brands/git-alt
     logo: bootstrap/3-circle-fill
     tag:
       html: fontawesome/brands/html5
       js: fontawesome/brands/js
       css: fontawesome/brands/css3
   features:
+    - content.tabs.link
     - announce.dismiss
     - search.suggest
     - search.highlight
