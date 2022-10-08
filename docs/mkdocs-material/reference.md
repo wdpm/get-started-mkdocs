@@ -302,4 +302,380 @@ theme:
     ```
 
 ## data tables
-> https://squidfunk.github.io/mkdocs-material/reference/data-tables/
+
+```yml
+markdown_extensions:
+  - tables
+```
+
+```markdown
+| Method      | Description                          |
+| ----------- | ------------------------------------ |
+| `GET`       | :material-check:     Fetch resource  |
+| `PUT`       | :material-check-all: Update resource |
+| `DELETE`    | :material-close:     Delete resource |
+```
+
+| Method      | Description                          |
+| ----------- | ------------------------------------ |
+| `GET`       | :material-check:     Fetch resource  |
+| `PUT`       | :material-check-all: Update resource |
+| `DELETE`    | :material-close:     Delete resource |
+
+## diagrams
+
+```yml
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+```
+
+``` mermaid
+graph LR
+  A[Start] --> B{Error?};
+  B -->|Yes| C[Hmm...];
+  C --> D[Debug];
+  D --> B;
+  B ---->|No| E[Yay!];
+```
+
+``` mermaid
+sequenceDiagram
+  Alice->>John: Hello John, how are you?
+  loop Healthcheck
+      John->>John: Fight against hypochondria
+  end
+  Note right of John: Rational thoughts!
+  John-->>Alice: Great!
+  John->>Bob: How about you?
+  Bob-->>John: Jolly good!
+```
+
+``` mermaid
+stateDiagram-v2
+  state fork_state <<fork>>
+    [*] --> fork_state
+    fork_state --> State2
+    fork_state --> State3
+
+    state join_state <<join>>
+    State2 --> join_state
+    State3 --> join_state
+    join_state --> State4
+    State4 --> [*]
+```
+
+``` mermaid
+classDiagram
+  Person <|-- Student
+  Person <|-- Professor
+  Person : +String name
+  Person : +String phoneNumber
+  Person : +String emailAddress
+  Person: +purchaseParkingPass()
+  Address "1" <-- "0..1" Person:lives at
+  class Student{
+    +int studentNumber
+    +int averageMark
+    +isEligibleToEnrol()
+    +getSeminarsTaken()
+  }
+  class Professor{
+    +int salary
+  }
+  class Address{
+    +String street
+    +String city
+    +String state
+    +int postalCode
+    +String country
+    -validate()
+    +outputAsLabel()  
+  }
+```
+
+``` mermaid
+erDiagram
+  CUSTOMER ||--o{ ORDER : places
+  ORDER ||--|{ LINE-ITEM : contains
+  CUSTOMER }|..|{ DELIVERY-ADDRESS : uses
+```
+
+更多语法，参阅 [diagrams](https://squidfunk.github.io/mkdocs-material/reference/diagrams/)
+
+## footnotes
+
+```yml
+markdown_extensions:
+  - footnotes
+```
+
+```markdown
+Lorem ipsum[^1] dolor sit amet, consectetur adipiscing elit.[^2]
+
+[^1]: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+[^2]:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla et euismod nulla. Curabitur feugiat, tortor non consequat
+finibus, justo purus auctor massa, nec semper lorem quam in massa.
+```
+
+Lorem ipsum[^1] dolor sit amet, consectetur adipiscing elit.[^2]
+
+[^1]: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+[^2]:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla et euismod nulla. Curabitur feugiat, tortor non consequat
+finibus, justo purus auctor massa, nec semper lorem quam in massa.
+
+## formatting
+
+```yaml
+markdown_extensions:
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+```
+
+### Highlighting changes
+
+```markdown
+Text can be {--deleted--} and replacement text {++added++}. This can also be combined into {~~one~>a single~~}
+operation. {==Highlighting==} is also possible {>>and comments can be added inline<<}.
+
+{== Formatting can also be applied to blocks by putting the opening and closing tags on separate lines and adding new
+lines between the tags and the content. ==}
+```
+
+上面这个代码块显示不了原生的文本，请查看源文件。
+
+Text can be {--deleted--} and replacement text {++added++}. This can also be combined into {~~one~>a single~~}
+operation. {==Highlighting==} is also possible {>>and comments can be added inline<<}.
+
+{==
+
+Formatting can also be applied to blocks by putting the opening and closing tags on separate lines and adding new lines
+between the tags and the content.
+
+==}
+
+### Highlighting text
+
+```
+- ==This was marked==
+- ^^This was inserted^^
+- ~~This was deleted~~
+```
+
+- ==This was marked==
+- ^^This was inserted^^
+- ~~This was deleted~~
+
+### sub and superscripts
+
+```markdown
+- H~2~O
+- A^T^A
+```
+
+- H~2~O
+- A^T^A
+
+### keyboard keys
+
+```markdown
+++ctrl+alt+del++
+```
+
+++ctrl+alt+del++
+
+## grids
+
+网格元素。
+
+## icons and emoji
+
+```yaml
+markdown_extensions:
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+```
+
+```markdown
+:smile:
+:fontawesome-regular-face-laugh-wink:
+```
+
+:smile:
+:fontawesome-regular-face-laugh-wink:
+
+## images
+
+```yaml
+markdown_extensions:
+  - attr_list
+  - md_in_html
+```
+
+### lightbox
+
+```bash
+pip install mkdocs-glightbox
+```
+
+```yaml
+plugins:
+  - glightbox
+```
+
+```markdown
+![Image title](https://dummyimage.com/400x250/eee/aaa){align=left}
+```
+
+![Image title](https://dummyimage.com/400x250/eee/aaa){align=left}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla et euismod nulla. Curabitur feugiat, tortor non consequat
+finibus, justo purus auctor massa, nec semper lorem quam in massa.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla et euismod nulla. Curabitur feugiat, tortor non consequat
+finibus, justo purus auctor massa, nec semper lorem quam in massa.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla et euismod nulla. Curabitur feugiat, tortor non consequat
+finibus, justo purus auctor massa, nec semper lorem quam in massa.
+
+---
+
+image caption 例子如下：
+
+```markdown
+<figure markdown>
+  ![Image title](https://dummyimage.com/600x400/){width="300"}
+  <figcaption>Image caption</figcaption>
+</figure>
+```
+
+<figure markdown>
+  ![Image title](https://dummyimage.com/600x400/){width="300"}
+  <figcaption>Image caption</figcaption>
+</figure>
+
+---
+
+lazy loading
+
+```markdown
+![Image title](https://dummyimage.com/600x400/){loading=lazy}
+```
+
+light and dark mode
+
+```markdown
+![Image title](https://dummyimage.com/600x400/f5f5f5/aaaaaa#only-light)
+![Image title](https://dummyimage.com/600x400/21222c/d5d7e2#only-dark)
+```
+
+![Image title](https://dummyimage.com/600x400/f5f5f5/aaaaaa#only-light)
+![Image title](https://dummyimage.com/600x400/21222c/d5d7e2#only-dark)
+
+## lists
+
+```yaml
+markdown_extensions:
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+```
+
+```markdown
+- Nulla et rhoncus turpis. Mauris ultricies elementum leo. Duis efficitur accumsan nibh eu mattis. Vivamus tempus velit
+  eros, porttitor placerat nibh lacinia sed. Aenean in finibus diam.
+
+    * Duis mollis est eget nibh volutpat, fermentum aliquet dui mollis.
+    * Nam vulputate tincidunt fringilla.
+    * Nullam dignissim ultrices urna non auctor.
+```
+
+- Nulla et rhoncus turpis. Mauris ultricies elementum leo. Duis efficitur accumsan nibh eu mattis. Vivamus tempus velit
+  eros, porttitor placerat nibh lacinia sed. Aenean in finibus diam.
+
+    * Duis mollis est eget nibh volutpat, fermentum aliquet dui mollis.
+    * Nam vulputate tincidunt fringilla.
+    * Nullam dignissim ultrices urna non auctor.
+
+```markdown
+- [x] Lorem ipsum dolor sit amet, consectetur adipiscing elit
+- [ ] Vestibulum convallis sit amet nisi a tincidunt
+    * [x] In hac habitasse platea dictumst
+    * [x] In scelerisque nibh non dolor mollis congue sed et metus
+    * [ ] Praesent sed risus massa
+- [ ] Aenean pretium efficitur erat, donec pharetra, ligula non scelerisque
+```
+
+- [x] Lorem ipsum dolor sit amet, consectetur adipiscing elit
+- [ ] Vestibulum convallis sit amet nisi a tincidunt
+    * [x] In hac habitasse platea dictumst
+    * [x] In scelerisque nibh non dolor mollis congue sed et metus
+    * [ ] Praesent sed risus massa
+- [ ] Aenean pretium efficitur erat, donec pharetra, ligula non scelerisque
+
+## MathJax
+
+```yaml
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+```
+
+创建一个 js 文件用于定义 mathjax
+
+``` js
+window.MathJax = {
+  tex: {
+    inlineMath: [["\\(", "\\)"]],
+    displayMath: [["\\[", "\\]"]],
+    processEscapes: true,
+    processEnvironments: true
+  },
+  options: {
+    ignoreHtmlClass: ".*|",
+    processHtmlClass: "arithmatex"
+  }
+};
+
+document$.subscribe(() => { 
+  MathJax.typesetPromise()
+})
+```
+
+示例：
+
+```markdown
+$$ \operatorname{ker} f=\{g\in G:f(g)=e_{H}\}{\mbox{.}} $$
+```
+
+$$ \operatorname{ker} f=\{g\in G:f(g)=e_{H}\}{\mbox{.}} $$
+
+inline block
+
+```markdown
+The homomorphism $f$ is injective if and only if its kernel is only the singleton set $e_G$, because otherwise $\exists
+a,b\in G$ with $a\neq b$ such that $f(a)=f(b)$.
+```
+
+The homomorphism $f$ is injective if and only if its kernel is only the singleton set $e_G$, because otherwise $\exists
+a,b\in G$ with $a\neq b$ such that $f(a)=f(b)$.
+
+注意，在 LXGW 字体情况下，默认公式渲染字体是 12px 太小，需要重写 CSS 样式，设置为更大的字体，例如 20px。
+
+## Abbreviations
+
+缩写术语的 tooltip 弹出提示。这是付费功能。

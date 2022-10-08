@@ -19,11 +19,21 @@ nav:
   - mkdocs-material:
       - setup: mkdocs-material/setup.md
       - reference: mkdocs-material/reference.md
+      - deploy: mkdocs-material/deploy.md
+      - customization: mkdocs-material/customization.md
 
 extra_css:
   - stylesheets/extra.css
 
 markdown_extensions:
+# mathjax
+  - pymdownx.arithmatex:
+      generic: true
+# lists
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - footnotes
 # admonition
   - admonition
   - pymdownx.details
@@ -40,17 +50,27 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
+# diagrams
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+#  formatting
   - pymdownx.critic
   - pymdownx.caret
   - pymdownx.keys
   - pymdownx.mark
   - pymdownx.tilde
+# emoji
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
       options:
         custom_icons:
           - overrides/.icons
+# images
+  - md_in_html
 
 extra:
   social:
@@ -81,6 +101,9 @@ extra:
       - reject
 
 extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   - javascripts/consent.js
   - javascripts/shortcuts.js
 
@@ -89,6 +112,8 @@ copyright: >
   <a href="#__consent">Change cookie settings</a>
 
 plugins:
+  # image zoom
+  - glightbox
   # https://www.mkdocs.org/user-guide/configuration/#environment-variables
   - social:
       cards: !ENV [ CARDS, false ]
@@ -119,6 +144,7 @@ plugins:
 
 theme:
   name: material
+  custom_dir: overrides
   logo: assets/logo.png
   favicon: assets/favicon.ico
   icon:
@@ -177,11 +203,3 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
-  highlightjs: true
-  hljs_languages:
-    - markdown
-    - md
-    - bash
-    - yml
-    - yaml
-    - rust

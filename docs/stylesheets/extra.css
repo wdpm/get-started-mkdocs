@@ -38,6 +38,11 @@
   --md-code-font: "<font>"; /* custom code font */
 }
 
+.MathJax{
+  /* fix custom font LXGW WenKai Screen math equation font-size*/
+  font-size: 125%!important;
+}
+
 /* tune back to top position*/
 [dir=ltr] .md-top {
   top: unset!important;
