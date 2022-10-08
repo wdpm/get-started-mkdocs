@@ -21,6 +21,7 @@ nav:
       - reference: mkdocs-material/reference.md
       - deploy: mkdocs-material/deploy.md
       - customization: mkdocs-material/customization.md
+      - alternatives: mkdocs-material/alternatives.md
 
 extra_css:
   - stylesheets/extra.css
