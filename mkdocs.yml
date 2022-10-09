@@ -123,7 +123,6 @@ plugins:
         text: "#FFFFFF"
       cards_font: Noto Sans SC
   - search:
-      #      separator: '[\s\u200b\-]'
       separator: '[\s\-\.]'
       lang:
         - ja

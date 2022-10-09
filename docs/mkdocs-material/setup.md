@@ -333,7 +333,8 @@ nav:
 
 ### navigation integration
 
-```ymltheme:
+```yml
+theme:
   features:
     - toc.integrate 
 ```
@@ -410,9 +411,64 @@ plugins:
 
 但是，依旧有其他更加自由的解决方案。
 
-- 使用 ja 语言作为替代，这是因为日文分词和中文很类似，可以获得比较一般的搜索体验。实测没有效果。
+- 使用 ja 语言作为替代，这是因为日文分词和中文很类似，可以获得比较一般的搜索体验。
 - 自定义中文搜索的插件支持。
   参阅 [自定义 MkDocs 中文搜索](https://cloud-atlas.readthedocs.io/zh_CN/latest/devops/docs/mkdocs/mkdocs_chinese_search.html)
+
+```yaml
+plugins:
+  - search:
+      lang:
+        - en
+        - ja
+      separator: '[\s\-\.]+'
+```
+
+然后直接修改 mkdocs-material 的源码文件 `mkdocs.contrib.search.search_index.py`
+
+```py
+import jieba  # 中文分词用模块
+
+
+class SearchIndex:
+
+    # 以上不变，略
+
+    def _add_entry(self, title, text, loc):
+        """
+        A simple wrapper to add an entry and ensure the contents
+        is UTF8 encoded.
+        """
+        text = text.replace('\u3000', ' ')  # 替换中文全角空格
+        text = text.replace('\u00a0', ' ')
+        text = re.sub(r'[ \t\n\r\f\v]+', ' ', text.strip())
+
+        # 给正文分词
+        text_seg_list = jieba.cut_for_search(text)  # 结巴分词，搜索引擎模式，召回率更高
+        text = " ".join(text_seg_list)  # 用空格连接词语
+
+        # 给标题分词
+        title_seg_list = jieba.cut(title, cut_all=False)  # 结巴分词，精确模式，更可读
+        title = " ".join(title_seg_list)  # 用空格连接词语
+
+        self._entries.append({
+            'title': title,
+            'text': str(text.encode('utf-8'), encoding='utf-8'),
+            'location': loc
+        })
+```
+
+这个方案比 ja 方案要好一点，但是直接修改源码这种侵入式的做法：
+
+- 侵入式很强，局限性太大。只能局限于本地 build。github action 之类就很难做到也同步修改源码。
+- 很脆弱。未来如果 mkdocs-material 稍微修改这部分 search 的逻辑，很可能会引起 search 失效。
+
+如果想要将这个 search 的侵入性变更纳入版本控制库，有两种思路：
+
+1. 新建一个新的插件。复制 mkdocs-material 中的 search 插件源码，并重写上面的中文搜索逻辑。
+2. 将整个 mkdocs-material 的源代码库纳入自己的版本控制，类似于 fork 一份来重写。
+
+为了尽可能将事情变得简单， 推荐仅重写 search 插件。参阅 [fast search](https://github.com/andyoakley/mkdocs-fastsearch) 。
 
 ### suggest
 
@@ -458,7 +514,7 @@ theme:
 ```yml
 plugins:
   - social:
-      cards: !ENV [ CARDS, false ]
+      cards: !ENV [CARDS, false]
       cards_color:
         fill: "#0FF1CE"
         text: "#FFFFFF"
@@ -667,49 +723,53 @@ plugins:
 
 ```html
 {% if page.meta.comments %}
-  <h2 id="__comments">{{lang.t("meta.comments") }}</h2>
-  <!-- Insert generated snippet here -->
+<h2 id="__comments">{{lang.t("meta.comments") }}</h2>
+<!-- Insert generated snippet here -->
 
-  <!-- Synchronize Giscus theme with palette -->
-  <script>
+<!-- Synchronize Giscus theme with palette -->
+<script>
     var giscus = document.querySelector("script[src*=giscus]")
 
     /* Set palette on initial load */
     var palette = __md_get("__palette")
     if (palette && typeof palette.color === "object") {
-      var theme = palette.color.scheme === "slate" ? "dark" : "light"
-      giscus.setAttribute("data-theme", theme) 
+        var theme = palette.color.scheme === "slate" ? "dark" : "light"
+        giscus.setAttribute("data-theme", theme)
     }
 
     /* Register event handlers after documented loaded */
-    document.addEventListener("DOMContentLoaded", function() {
-      var ref = document.querySelector("[data-md-component=palette]")
-      ref.addEventListener("change", function() {
-        var palette = __md_get("__palette")
-        if (palette && typeof palette.color === "object") {
-          var theme = palette.color.scheme === "slate" ? "dark" : "light"
+    document.addEventListener("DOMContentLoaded", function () {
+        var ref = document.querySelector("[data-md-component=palette]")
+        ref.addEventListener("change", function () {
+            var palette = __md_get("__palette")
+            if (palette && typeof palette.color === "object") {
+                var theme = palette.color.scheme === "slate" ? "dark" : "light"
 
-          /* Instruct Giscus to change theme */
-          var frame = document.querySelector(".giscus-frame")
-          frame.contentWindow.postMessage(
-            {giscus: { setConfig: { theme} } },
-            "https://giscus.app"
-          )
-        }
-      })
+                /* Instruct Giscus to change theme */
+                var frame = document.querySelector(".giscus-frame")
+                frame.contentWindow.postMessage(
+                        {giscus: {setConfig: {theme}}},
+                        "https://giscus.app"
+                )
+            }
+        })
     })
-  </script>
+</script>
 {% endif %}
 ```
-将第二步生成的代码配置放入第三步的`<!-- Insert generated snippet here -->`位置。
+
+将第二步生成的代码配置放入第三步的 `<!-- Insert generated snippet here -->` 位置。
 
 4) 在特定页面启用评论功能。
+
 ```markdown
 ---
 comments: true
 ---
 
 # Document title
+
 ...
 ```
+
 注意：此时上面这个页面并没有出现评论元素。
