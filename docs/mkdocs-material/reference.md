@@ -679,3 +679,11 @@ a,b\in G$ with $a\neq b$ such that $f(a)=f(b)$.
 ## Abbreviations
 
 缩写术语的 tooltip 弹出提示。这是付费功能。
+
+## toc
+```yaml
+markdown_extensions:
+  - toc:
+      permalink: true
+```
+在文章的标题后生成一个 ¶ 标记，方便点击。

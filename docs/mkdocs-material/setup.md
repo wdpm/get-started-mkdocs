@@ -40,9 +40,9 @@ extra_css:
 
 ```css
 :root > * {
-  --md-primary-fg-color: #EE0F0F;
-  --md-primary-fg-color--light: #ECB7B7;
-  --md-primary-fg-color--dark: #90030C;
+    --md-primary-fg-color: #EE0F0F;
+    --md-primary-fg-color--light: #ECB7B7;
+    --md-primary-fg-color--dark: #90030C;
 }
 ```
 
@@ -67,13 +67,13 @@ theme:
 
 ```css
 @font-face {
-  font-family: "<font>";
-  src: "...";
+    font-family: "<font>";
+    src: "...";
 }
 
 :root {
-  --md-text-font: "<font>";
-  --md-code-font: "<font>";
+    --md-text-font: "<font>";
+    --md-code-font: "<font>";
 }
 ```
 
@@ -82,13 +82,13 @@ theme:
 ```css
 /* refer docs: https://github.com/chawyehsu/lxgw-wenkai-webfont */
 @font-face {
-  font-family: "LXGW WenKai";
-  src: url("https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css");
+    font-family: "LXGW WenKai";
+    src: url("https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css");
 }
 
 :root {
-  --md-text-font: "LXGW WenKai";
-  --md-code-font: "<font>"; /* custom code font */
+    --md-text-font: "LXGW WenKai";
+    --md-code-font: "<font>"; /* custom code font */
 }
 ```
 
@@ -391,7 +391,7 @@ keyboard$.subscribe(function (key) {
 
 ```css
 .md-grid {
-  max-width: 1440px;
+    max-width: 1440px;
 }
 ```
 
@@ -424,7 +424,7 @@ plugins:
       separator: '[\s\-\.]+'
 ```
 
-然后直接修改 mkdocs-material 的源码文件 `mkdocs.contrib.search.search_index.py`
+然后直接修改 mkdocs 的源码文件 `mkdocs.contrib.search.search_index.py`
 
 ```py
 import jieba  # 中文分词用模块
@@ -461,14 +461,33 @@ class SearchIndex:
 这个方案比 ja 方案要好一点，但是直接修改源码这种侵入式的做法：
 
 - 侵入式很强，局限性太大。只能局限于本地 build。github action 之类就很难做到也同步修改源码。
-- 很脆弱。未来如果 mkdocs-material 稍微修改这部分 search 的逻辑，很可能会引起 search 失效。
+- 很脆弱。未来如果 mkdocs 稍微修改这部分 search 的逻辑，很可能会引起 search 失效。
 
 如果想要将这个 search 的侵入性变更纳入版本控制库，有两种思路：
 
-1. 新建一个新的插件。复制 mkdocs-material 中的 search 插件源码，并重写上面的中文搜索逻辑。
-2. 将整个 mkdocs-material 的源代码库纳入自己的版本控制，类似于 fork 一份来重写。
+1. 新建一个新的插件。复制 mkdocs 中的 search 插件源码，并重写上面的中文搜索逻辑。
+2. 将整个 mkdocs 的源代码库纳入自己的版本控制，类似于 fork 一份来重写。
 
-为了尽可能将事情变得简单， 推荐仅重写 search 插件。参阅 [fast search](https://github.com/andyoakley/mkdocs-fastsearch) 。
+关于搜索插件的编写，可以参阅 [fast search](https://github.com/andyoakley/mkdocs-fastsearch) 。
+
+现在，我们将 mkdocs 的 search 插件的源码文件夹复制录到我们的项目根目录下，重命名并继续。
+
+然而，又出现了一个问题，serve 或者 build 之后，网页上搜索框不见了。
+
+为了排查问题，因此需要对比两次构建后相关文件的差异。主要有两点需要关注:
+
+1. search_index.json 是否正常对中文进行了分词切割。
+2. 网页上为何搜索框不显示，以及不显示的原因。
+
+第一点不好确认。但是两个 search_index 仅有细微的文件差异。 第二点：搜索框不显示是因为相关 HTML 元素不存在，但是暂时无法得知不存在的原因。
+
+总之，目前的坑似乎是越挖越深。
+
+- mkdocs 本身没有为广大中文玩家提供一等公民的支持，才会衍生各种奇奇怪怪的临时方案。
+- mkdocs 并没有提供良好的 API 或者 hook 来对 search_index 的生成进行重写, SearchIndex._add_entry 这个方法是私有方法。
+- mkdocs-material 支持中文搜索，却要求付费支持才能使用。因此存在限制，毕竟不是每个人都想要完全绑定于 mkdocs-material 这条路。 或许你某天就想换一个文档生成器了？
+
+最后，还是先回退到 内置 search 的 ja 日文支持方案吧。
 
 ### suggest
 

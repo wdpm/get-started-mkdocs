@@ -11,11 +11,12 @@ nav:
   - home:
       - index.md
       - tags: tags.md
-  - setup:
+  - mkdocs:
       #      - setup/index.md
-      - get-started: setup/get-started.md
-      - user-guide: setup/user-guide.md
-      - theme: setup/theme.md
+      - get-started: mkdocs/get-started.md
+      - user-guide: mkdocs/user-guide.md
+      - theme: mkdocs/theme.md
+      - configuration: mkdocs/configuration.md
   - mkdocs-material:
       - setup: mkdocs-material/setup.md
       - reference: mkdocs-material/reference.md
@@ -25,6 +26,9 @@ nav:
 
 extra_css:
   - stylesheets/extra.css
+
+hooks:
+  - my_hooks.py
 
 markdown_extensions:
 # mathjax
@@ -72,6 +76,9 @@ markdown_extensions:
           - overrides/.icons
 # images
   - md_in_html
+# toc
+  - toc:
+      permalink: true
 
 extra:
   social:

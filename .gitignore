@@ -1,1 +1,7 @@
 site/
+__pycache__/
+.idea/
+
+# mkdcos
+mkdocs/.github
+mkdocs/docs
