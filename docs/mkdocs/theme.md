@@ -22,6 +22,7 @@ theme:
     nav_style: primary
     locale: zh_CN
 ```
+
 - highlightjs 启用代码块高亮
 - hljs_style：代码块的高亮风格，默认是 github
 - hljs_languages：额外的高亮语言，默认高亮只有 23 种语言。

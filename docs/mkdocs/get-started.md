@@ -5,7 +5,8 @@
 ## 安装
 
 ```bash
-pip install mkdocs
+# 这个文件描述了项目依赖，一定要集中管理，否则几个月后不可能记住之前安装了啥依赖
+pip install -r requirements.txt
 ```
 
 ## 新建项目
